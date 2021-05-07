@@ -1,6 +1,10 @@
+
 #include <iostream>
-#include <string>
+#include <string.h>
+#include <cstring>
+#include <stdlib.h>
 #include <vector>
+
 
 class treadLab{
 public:
@@ -12,5 +16,4 @@ void f2();
 private:
 int **M;
 bool *R;
-
 };

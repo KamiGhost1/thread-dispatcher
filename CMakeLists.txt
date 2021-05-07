@@ -8,4 +8,4 @@ add_executable(
         threadLab.cpp
         threadLab.h
         task.h
-)
+        task.cpp)
