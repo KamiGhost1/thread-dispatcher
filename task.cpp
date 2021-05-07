@@ -55,19 +55,23 @@ void TaskManage::init_tasks() {
     K.init_task.push_back("G");
 
 
-    tasks.push_back(A);
-    tasks.push_back(B);
-    tasks.push_back(C);
-    tasks.push_back(D);
-    tasks.push_back(E);
-    tasks.push_back(F);
-    tasks.push_back(G);
-    tasks.push_back(H);
-    tasks.push_back(K);
+    this->tasks.push_back(A);
+    this->tasks.push_back(B);
+    this->tasks.push_back(C);
+    this->tasks.push_back(D);
+    this->tasks.push_back(E);
+    this->tasks.push_back(F);
+    this->tasks.push_back(G);
+    this->tasks.push_back(H);
+    this->tasks.push_back(K);
 }
 
 
 void TaskManage::clear_tasks() {
-
+    for(int i = 0; i < this->tasks.size();i++){
+        this->tasks[i].init_task.clear();
+        this->tasks[i].next_task.clear();
+    }
+    this->tasks.clear();
 }
 
