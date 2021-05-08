@@ -3,15 +3,15 @@
 
 
 void TaskManage::init_tasks() {
-    task A("A");
-    task B("B");
-    task C("C");
-    task D("D");
-    task E("E");
-    task F("F");
-    task G("G");
-    task H("H");
-    task K("K");
+    task A("A",0,1);
+    task B("B",0,1);
+    task C("C",1,1);
+    task D("D",1,1);
+    task E("E",1,1);
+    task F("F",2,1);
+    task G("G",2,1);
+    task H("H",2,1);
+    task K("K",3,1);
 
     A.next_task.push_back("C");
     A.next_task.push_back("D");
