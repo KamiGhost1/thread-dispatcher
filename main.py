@@ -21,6 +21,7 @@ class Ui(QtWidgets.QMainWindow, Form):
         self.pushButton_2.clicked.connect(self.Button2Pressed)
 
     def Button1Pressed(self):
+        self.logger("START")
         if len(self.tasks) > 0:
             self.tasks.clear()
             print("Clean task array")
@@ -28,17 +29,12 @@ class Ui(QtWidgets.QMainWindow, Form):
         self.initTask()
         # self.debugList()
         # self.startThread(self.tasks["A"])
-        global log
-        log += "START\n"
-        self.textBrowser.setText(log)
         self.firstStart()
 
     def Button2Pressed(self):
         self.tasks.clear()
         print("RESET")
-        global log
-        log = "RESET\n"
-        self.textBrowser.setText(log)
+        self.logger("RESET")
 
     def initTask(self):
         self.tasks["A"] = methods.Task("A", 0, 1, [], ["C", "D", "E"])
@@ -62,6 +58,9 @@ class Ui(QtWidgets.QMainWindow, Form):
         print(task.id)
         task.start()
         self.searchTask(task.id)
+        # x = threading.Thread(target=self.searchTask, args=(task.id,))
+        # x.start()
+        # x.join()
         task.finish()
         print(task.finishTime)
         return 0
@@ -142,52 +141,58 @@ class Ui(QtWidgets.QMainWindow, Form):
             self.F6()
         if name == 'K':
             self.F7()
-        
+
+    def logger(self, logs):
+        global log 
+        log += logs + "\n"
+        self.textBrowser.setText(log)
+
 
     def genM(self):
-        print("gen M start")
+        global log
+        log+="gen M start\n"
         time.sleep(3)
-        print("gen M ready")
+        log+="gen M finish\n"
         return 0
     def genR(self):
         print("gen R start")
         time.sleep(3)
-        print("gen R ready")
+        print("gen R finish")
         return 0 
     def F1(self):
         print("F1 start")
         time.sleep(3)
-        print("F1 ready")
+        print("F1 finish")
         return 0 
     def F2(self):
         print("F2 start")
         time.sleep(3)
-        print("F2 ready")
+        print("F2 finish")
         return 0 
     def F3(self):
         print("F3 start")
         time.sleep(3)
-        print("F3 ready")
+        print("F3 finish")
         return 0 
     def F4(self):
         print("F4 start")
         time.sleep(3)
-        print("F4 ready")
+        print("F4 finish")
         return 0 
     def F5(self):
         print("F5 start")
         time.sleep(3)
-        print("F5 ready")
+        print("F5 finish")
         return 0 
     def F6(self):
         print("F6 start")
         time.sleep(3)
-        print("F6 ready")
+        print("F6 finish")
         return 0 
     def F7(self):
         print("F7 start")
         time.sleep(3)
-        print("F7 ready")
+        print("F7 finish")
         return 0 
     
 
