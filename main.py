@@ -26,10 +26,11 @@ class Ui(QtWidgets.QMainWindow, Form):
         print("START")
         self.initTask()
         # self.debugList()
-        self.startThread(self.tasks["A"])
+        # self.startThread(self.tasks["A"])
         global log
         log += "START\n"
         self.textBrowser.setText(log)
+        self.firstStart()
 
     def Button2Pressed(self):
         self.tasks.clear()
@@ -50,19 +51,48 @@ class Ui(QtWidgets.QMainWindow, Form):
         self.tasks["K"] = methods.Task("K", 3, 1, ["G"], [])
 
     def firstStart(self):
-        print("***")
+        runList = list()
+        runList.append(self.tasks["A"])
+        runList.append(self.tasks["B"])
+        self.runner(runList)
+        
 
     def startThread(self, task):
         print(task.id)
         task.start()
-        time.sleep(1)
+        self.searchTask(task.id)
         task.finish()
         print(task.finishTime)
         return 0
 
-    def runner(self):
-        print("adad")
+    def runner(self, runList):
+        localThreads = dict()
+        a=''
+        if len(runList) > 0:
+            for i in range(len(runList)):
+                # print(runList[i].id)
+                # self.startThread(runList[i])
+                a = runList[i]
+                localThreads[runList[i].id]=threading.Thread(target=self.startThread, args=(a,))
+            for i in localThreads:
+                localThreads[i].start()
+            stop = False
+            count = 0
+            while(stop == False):
+                # print("alallalalalallalalalalalalalalallalal")
+                for i in localThreads:
+                    if(localThreads[i].is_alive()):
+                        stop = False
+                    else:
+                        count+=1
+                if(count == len(localThreads)):
+                    stop = True
+                else:
+                    count = 0
+            else:
+                print("end of work ")
 
+        
     def debugList(self):
         for i in self.tasks :
             print(self.tasks[i].nextTasks)
@@ -89,8 +119,14 @@ class Ui(QtWidgets.QMainWindow, Form):
         
 
     def genM(self):
+        print("gen M start")
+        time.sleep(10)
+        print("gen M ready")
         return 0
     def genR(self):
+        print("gen R start")
+        time.sleep(3)
+        print("gen R ready")
         return 0 
     def F1(self):
         return 0 
