@@ -1,5 +1,6 @@
 import time
 from PyQt5 import uic, QtWidgets
+from PyQt5.QtCore import qIsNull
 from PyQt5.QtWidgets import QApplication
 import methods
 
@@ -65,8 +66,24 @@ class Ui(QtWidgets.QMainWindow, Form):
         print(task.finishTime)
         return 0
 
+    def buildTaskPull(self, servedPull):
+        newPull = dict()
+        pullConverted = list()
+        elem = ''
+        if len(servedPull) > 0:
+            for i in range(len(servedPull)):
+                elem = servedPull[i]
+                if len(elem.nextTasks) > 0 :
+                    for j in range(len(elem.nextTasks)):
+                        if newPull.get(elem.nextTasks[j]) == None:
+                            newPull[elem.nextTasks[j]] = self.tasks[elem.nextTasks[j]]
+            for i in newPull:
+                pullConverted.append(newPull[i])    
+        return pullConverted
+
     def runner(self, runList):
         localThreads = dict()
+        nextTaskPull = ''
         a=''
         if len(runList) > 0:
             for i in range(len(runList)):
@@ -90,9 +107,18 @@ class Ui(QtWidgets.QMainWindow, Form):
                 else:
                     count = 0
             else:
-                print("end of work ")
+                nextTaskPull = self.buildTaskPull(runList)
+                if len(nextTaskPull) > 0:
+                    self.runner(nextTaskPull)
+                    # self.debugNewPull(nextTaskPull)
+                else:
+                    print("end of work ")
 
-        
+
+    def debugNewPull(self, newPull):
+        for i in range(len(newPull)):
+            print(newPull[i].nextTasks)
+
     def debugList(self):
         for i in self.tasks :
             print(self.tasks[i].nextTasks)
@@ -120,7 +146,7 @@ class Ui(QtWidgets.QMainWindow, Form):
 
     def genM(self):
         print("gen M start")
-        time.sleep(10)
+        time.sleep(3)
         print("gen M ready")
         return 0
     def genR(self):
@@ -129,18 +155,39 @@ class Ui(QtWidgets.QMainWindow, Form):
         print("gen R ready")
         return 0 
     def F1(self):
+        print("F1 start")
+        time.sleep(3)
+        print("F1 ready")
         return 0 
     def F2(self):
+        print("F2 start")
+        time.sleep(3)
+        print("F2 ready")
         return 0 
     def F3(self):
+        print("F3 start")
+        time.sleep(3)
+        print("F3 ready")
         return 0 
     def F4(self):
+        print("F4 start")
+        time.sleep(3)
+        print("F4 ready")
         return 0 
     def F5(self):
+        print("F5 start")
+        time.sleep(3)
+        print("F5 ready")
         return 0 
     def F6(self):
+        print("F6 start")
+        time.sleep(3)
+        print("F6 ready")
         return 0 
     def F7(self):
+        print("F7 start")
+        time.sleep(3)
+        print("F7 ready")
         return 0 
     
 
