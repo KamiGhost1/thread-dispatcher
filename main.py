@@ -1,7 +1,8 @@
 import time
-from PyQt5 import uic, QtWidgets
+from PyQt5 import uic, QtWidgets, QtCore
 from PyQt5.QtCore import qIsNull
 from PyQt5.QtWidgets import QApplication
+from PyQt5.uic.properties import QtCore
 import methods
 
 import threading
@@ -12,13 +13,14 @@ Form, _ = uic.loadUiType('form.ui')
 
 class Ui(QtWidgets.QMainWindow, Form):
     tasks = dict()
-    threads = dict()
+    
     global startTime
     def __init__(self):
         super(Ui, self).__init__()
         self.setupUi(self)
         self.pushButton.clicked.connect(self.Button1Pressed)
         self.pushButton_2.clicked.connect(self.Button2Pressed)
+        
 
     def Button1Pressed(self):
         self.logger("START")
@@ -27,9 +29,10 @@ class Ui(QtWidgets.QMainWindow, Form):
             print("Clean task array")
         print("START")
         self.initTask()
-        # self.debugList()
-        # self.startThread(self.tasks["A"])
-        self.firstStart()
+        x = threading.Thread(target=self.firstStart, daemon=True)
+        y = threading.Thread(target=self.viewLogs, daemon=True)
+        x.start()
+        # y.start()
 
     def Button2Pressed(self):
         self.tasks.clear()
@@ -58,9 +61,6 @@ class Ui(QtWidgets.QMainWindow, Form):
         print(task.id)
         task.start()
         self.searchTask(task.id)
-        # x = threading.Thread(target=self.searchTask, args=(task.id,))
-        # x.start()
-        # x.join()
         task.finish()
         print(task.finishTime)
         return 0
@@ -145,54 +145,65 @@ class Ui(QtWidgets.QMainWindow, Form):
     def logger(self, logs):
         global log 
         log += logs + "\n"
+        # QApplication.processEvents()
+        self.viewLogs()
+        
+        
+    def viewLogs(self):
+        global log
         self.textBrowser.setText(log)
-
+    
+    def viewInfinityLogs(self):
+        global log
+        while True:
+            self.textBrowser.setText(log)
+            time.sleep(0.05)
+    
 
     def genM(self):
-        global log
-        log+="gen M start\n"
+        # self.logger("gen M start")
         time.sleep(3)
-        log+="gen M finish\n"
+        # self.logger("gen M finish")
         return 0
     def genR(self):
-        print("gen R start")
+        # self.logger("gen R start")
         time.sleep(3)
-        print("gen R finish")
+        # self.logger("gen R finish")
         return 0 
     def F1(self):
-        print("F1 start")
+        # self.logger("F1 start")
         time.sleep(3)
-        print("F1 finish")
+        # self.logger("F1 finish")
         return 0 
     def F2(self):
-        print("F2 start")
+        # self.logger("F2 start")
         time.sleep(3)
-        print("F2 finish")
+        # self.logger("F2 finish")
         return 0 
     def F3(self):
-        print("F3 start")
+        # self.logger("F3 start")
         time.sleep(3)
-        print("F3 finish")
+        # self.logger("F3 finish")
         return 0 
     def F4(self):
-        print("F4 start")
+        # self.logger("F4 start")
         time.sleep(3)
-        print("F4 finish")
+        # self.logger("F4 finish")
         return 0 
     def F5(self):
-        print("F5 start")
+        # self.logger("F5 start")
         time.sleep(3)
-        print("F5 finish")
+        # self.logger("F5 finish")
         return 0 
     def F6(self):
-        print("F6 start")
+        # self.logger("F6 start")
         time.sleep(3)
-        print("F6 finish")
+        # self.logger("F6 finish")
         return 0 
     def F7(self):
-        print("F7 start")
+        # self.logger("F7 start")
         time.sleep(3)
-        print("F7 finish")
+        # self.logger("F7 finish")
         return 0 
     
 
