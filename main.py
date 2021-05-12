@@ -67,13 +67,11 @@ class Ui(QtWidgets.QMainWindow, Form):
         global LOGG
         global TaskCounter
         global startTime
-        print(task.id)
         task.start()
         self.globalLogger("proccess " + task.id + " started in " + str(time.time()-startTime))
         self.searchTask(task.id)
         task.finish()
         self.globalLogger("proccess " + task.id + " finish in " + str(time.time()-startTime))
-        print(task.finishTime)
         TaskCounter+=1
         return 0
 
@@ -160,6 +158,7 @@ class Ui(QtWidgets.QMainWindow, Form):
         global lock
         with lock:
             LOGG += log +"\n"
+            print(log)
 
     def viewLogs(self):
         global LOGG
