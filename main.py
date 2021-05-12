@@ -30,9 +30,7 @@ class Ui(QtWidgets.QMainWindow, Form):
         print("START")
         self.initTask()
         x = threading.Thread(target=self.firstStart, daemon=True)
-        y = threading.Thread(target=self.viewLogs, daemon=True)
         x.start()
-        # y.start()
 
     def Button2Pressed(self):
         self.tasks.clear()
@@ -143,10 +141,9 @@ class Ui(QtWidgets.QMainWindow, Form):
             self.F7()
 
     def logger(self, logs):
-        global log 
+        log = self.textBrowser.toPlainText()
         log += logs + "\n"
-        # QApplication.processEvents()
-        self.viewLogs()
+        self.textBrowser.setText(log)
         
         
     def viewLogs(self):
