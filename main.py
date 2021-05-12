@@ -9,12 +9,15 @@ import threading
 
 Form, _ = uic.loadUiType('form.ui')
 
-
+TaskCounter = 0 
+lock = threading.Lock()
+LOGG = ''
+startTime = 0
 
 class Ui(QtWidgets.QMainWindow, Form):
     tasks = dict()
     
-    global startTime
+     
     def __init__(self):
         super(Ui, self).__init__()
         self.setupUi(self)
@@ -23,6 +26,7 @@ class Ui(QtWidgets.QMainWindow, Form):
         
 
     def Button1Pressed(self):
+        global startTime
         self.logger("START")
         if len(self.tasks) > 0:
             self.tasks.clear()
@@ -30,7 +34,11 @@ class Ui(QtWidgets.QMainWindow, Form):
         print("START")
         self.initTask()
         x = threading.Thread(target=self.firstStart, daemon=True)
+        startTime = time.time()
         x.start()
+        while TaskCounter < len(self.tasks):
+            time.sleep(0.05)
+            self.viewLogs()
 
     def Button2Pressed(self):
         self.tasks.clear()
@@ -56,11 +64,17 @@ class Ui(QtWidgets.QMainWindow, Form):
         
 
     def startThread(self, task):
+        global LOGG
+        global TaskCounter
+        global startTime
         print(task.id)
         task.start()
+        self.globalLogger("proccess " + task.id + " started in " + str(time.time()-startTime))
         self.searchTask(task.id)
         task.finish()
+        self.globalLogger("proccess " + task.id + " finish in " + str(time.time()-startTime))
         print(task.finishTime)
+        TaskCounter+=1
         return 0
 
     def buildTaskPull(self, servedPull):
@@ -84,8 +98,6 @@ class Ui(QtWidgets.QMainWindow, Form):
         a=''
         if len(runList) > 0:
             for i in range(len(runList)):
-                # print(runList[i].id)
-                # self.startThread(runList[i])
                 a = runList[i]
                 localThreads[runList[i].id]=threading.Thread(target=self.startThread, args=(a,))
             for i in localThreads:
@@ -93,7 +105,6 @@ class Ui(QtWidgets.QMainWindow, Form):
             stop = False
             count = 0
             while(stop == False):
-                # print("alallalalalallalalalalalalalalallalal")
                 for i in localThreads:
                     if(localThreads[i].is_alive()):
                         stop = False
@@ -107,7 +118,6 @@ class Ui(QtWidgets.QMainWindow, Form):
                 nextTaskPull = self.buildTaskPull(runList)
                 if len(nextTaskPull) > 0:
                     self.runner(nextTaskPull)
-                    # self.debugNewPull(nextTaskPull)
                 else:
                     print("end of work ")
 
@@ -145,62 +155,43 @@ class Ui(QtWidgets.QMainWindow, Form):
         log += logs + "\n"
         self.textBrowser.setText(log)
         
-        
+    def globalLogger(self, log):
+        global LOGG
+        global lock
+        with lock:
+            LOGG += log +"\n"
+
     def viewLogs(self):
-        global log
-        self.textBrowser.setText(log)
-    
-    def viewInfinityLogs(self):
-        global log
-        while True:
-            self.textBrowser.setText(log)
-            time.sleep(0.05)
+        global LOGG
+        self.textBrowser.setText(LOGG)
     
 
     def genM(self):
-        # self.logger("gen M start")
         time.sleep(3)
-        # self.logger("gen M finish")
         return 0
     def genR(self):
-        # self.logger("gen R start")
         time.sleep(3)
-        # self.logger("gen R finish")
         return 0 
     def F1(self):
-        # self.logger("F1 start")
-        time.sleep(3)
-        # self.logger("F1 finish")
+        time.sleep(5)
         return 0 
     def F2(self):
-        # self.logger("F2 start")
         time.sleep(3)
-        # self.logger("F2 finish")
         return 0 
     def F3(self):
-        # self.logger("F3 start")
         time.sleep(3)
-        # self.logger("F3 finish")
         return 0 
     def F4(self):
-        # self.logger("F4 start")
         time.sleep(3)
-        # self.logger("F4 finish")
         return 0 
     def F5(self):
-        # self.logger("F5 start")
         time.sleep(3)
-        # self.logger("F5 finish")
         return 0 
     def F6(self):
-        # self.logger("F6 start")
         time.sleep(3)
-        # self.logger("F6 finish")
         return 0 
     def F7(self):
-        # self.logger("F7 start")
         time.sleep(3)
-        # self.logger("F7 finish")
         return 0 
     
 
@@ -208,8 +199,6 @@ class Ui(QtWidgets.QMainWindow, Form):
 
 if __name__ == '__main__':
     import sys
-    global log
-    log = ""
     app = QApplication(sys.argv)
     window = Ui()
     window.show()
