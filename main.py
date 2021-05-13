@@ -1,6 +1,7 @@
 import time
 from PyQt5 import uic, QtWidgets, QtCore
 from PyQt5.QtCore import qIsNull
+from PyQt5.QtGui import QOpenGLVersionProfile
 from PyQt5.QtWidgets import QApplication
 from PyQt5.uic.properties import QtCore
 import methods
@@ -27,7 +28,10 @@ class Ui(QtWidgets.QMainWindow, Form):
 
     def Button1Pressed(self):
         global startTime
-        self.logger("START")
+        global TaskCounter
+        global LOGG
+        LOGG = ""
+        self.globalLogger("START")
         if len(self.tasks) > 0:
             self.tasks.clear()
             print("Clean task array")
@@ -44,11 +48,14 @@ class Ui(QtWidgets.QMainWindow, Form):
                     self.progressBars[i].setValue(20)
                 if self.tasks[i].finished and self.tasks[i].started:
                     self.progressBars[i].setValue(100)
+        else:
+            TaskCounter = 0
+
 
     def Button2Pressed(self):
         self.tasks.clear()
         print("RESET")
-        self.logger("RESET")
+        self.globalLogger("RESET")
 
     def initTask(self):
         self.tasks["A"] = methods.Task("A", 0, 1, [], ["C", "D", "E"])
@@ -69,6 +76,8 @@ class Ui(QtWidgets.QMainWindow, Form):
         self.progressBars["G"] = self.G
         self.progressBars["H"] = self.H
         self.progressBars["K"] = self.K
+        for i in self.progressBars:
+            self.progressBars[i].setValue(0)
 
     def firstStart(self):
         runList = list()
