@@ -16,8 +16,8 @@ startTime = 0
 
 class Ui(QtWidgets.QMainWindow, Form):
     tasks = dict()
-    
-     
+    progressBars = dict()
+
     def __init__(self):
         super(Ui, self).__init__()
         self.setupUi(self)
@@ -36,9 +36,14 @@ class Ui(QtWidgets.QMainWindow, Form):
         x = threading.Thread(target=self.firstStart, daemon=True)
         startTime = time.time()
         x.start()
+        
         while TaskCounter < len(self.tasks):
-            time.sleep(0.05)
             self.viewLogs()
+            for i in self.progressBars:
+                if self.tasks[i].started and not self.tasks[i].finished:
+                    self.progressBars[i].setValue(20)
+                if self.tasks[i].finished and self.tasks[i].started:
+                    self.progressBars[i].setValue(100)
 
     def Button2Pressed(self):
         self.tasks.clear()
@@ -55,6 +60,15 @@ class Ui(QtWidgets.QMainWindow, Form):
         self.tasks["G"] = methods.Task("G", 2, 1, ["C", "D", "E"], ["K"])
         self.tasks["H"] = methods.Task("H", 2, 1, ["C", "D", "E"], [])
         self.tasks["K"] = methods.Task("K", 3, 1, ["G"], [])
+        self.progressBars["A"] = self.A
+        self.progressBars["B"] = self.B
+        self.progressBars["C"] = self.C
+        self.progressBars["D"] = self.D
+        self.progressBars["E"] = self.E
+        self.progressBars["F"] = self.F
+        self.progressBars["G"] = self.G
+        self.progressBars["H"] = self.H
+        self.progressBars["K"] = self.K
 
     def firstStart(self):
         runList = list()

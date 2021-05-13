@@ -8,7 +8,8 @@ class Task:
     initTasks=[]
     nextTasks=[]
     P,L = 0,0
-    func = ''
+    started = False
+    finished = False
 
     def __init__(self, id, P, L, initTasks, nextTasks):
         self.id = id
@@ -19,8 +20,10 @@ class Task:
 
     def start(self):
         self.initTime = time.time()
+        self.started = True
         # threading.thread(target=self.func)
         #
 
     def finish(self):
         self.finishTime = time.time() - self.initTime
+        self.finished = True
