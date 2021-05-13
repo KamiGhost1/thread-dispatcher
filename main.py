@@ -5,15 +5,24 @@ from PyQt5.QtGui import QOpenGLVersionProfile
 from PyQt5.QtWidgets import QApplication
 from PyQt5.uic.properties import QtCore
 import methods
-
 import threading
+import random
 
 Form, _ = uic.loadUiType('form.ui')
 
-TaskCounter = 0 
+
 lock = threading.Lock()
+lockM = threading.Lock()
+lockR = threading.Lock()
+
+TaskCounter = 0 
 LOGG = ''
 startTime = 0
+N = 5
+MAX_VALUE = 100
+TRUE_VALUE = 0.5
+M = [[0]*N]*N
+R = [False]*N
 
 class Ui(QtWidgets.QMainWindow, Form):
     tasks = dict()
@@ -31,6 +40,7 @@ class Ui(QtWidgets.QMainWindow, Form):
         global TaskCounter
         global LOGG
         LOGG = ""
+        # random.seed(26)
         self.globalLogger("START")
         if len(self.tasks) > 0:
             self.tasks.clear()
@@ -50,6 +60,8 @@ class Ui(QtWidgets.QMainWindow, Form):
                     self.progressBars[i].setValue(100)
         else:
             TaskCounter = 0
+            self.printResults()
+            self.viewLogs()
 
 
     def Button2Pressed(self):
@@ -189,35 +201,101 @@ class Ui(QtWidgets.QMainWindow, Form):
     
 
     def genM(self):
-        time.sleep(3)
-        return 0
+        global M, MAX_VALUE, lockM
+        with lockM:
+            localM = M
+        a = 0
+        for i in range(N):
+            for j in range(N):
+                a = random.randint(0, MAX_VALUE)
+                localM[i][j] = a
+                # print(a)
+        with lockM:
+            M = localM
+        return localM
     def genR(self):
-        time.sleep(3)
-        return 0 
+        global R,TRUE_VALUE, lockR
+        a = 0
+        with lockR:
+            localR = R
+        for i in range(N):
+            a = random.random()
+            if(a > TRUE_VALUE):
+                localR[i]=True
+            else:
+                localR[i]=False
+        with lockR:
+            R = localR
+        return localR
     def F1(self):
-        time.sleep(5)
-        return 0 
+        global lockR, lockM, M, R
+        with lockM:
+            localM = M
+        with lockR:
+            localR = R
+        for i in range(N):
+            for j in range(N):
+                # print(localM[i][j])
+                # print(R)
+                if localR[j]:
+                    localM[i][j] +=5
+        with lockM:
+            M = localM
+        return localM 
     def F2(self):
-        time.sleep(3)
-        return 0 
+        global lockR, lockM, M, R
+        with lockM:
+            localM = M
+        with lockR:
+            localR = R
+        for i in range(N):
+            for j in range(N):
+                if localR[j]:
+                    localM[i][j] /=2
+        with lockM:
+            M = localM
+        return localM  
     def F3(self):
-        time.sleep(3)
-        return 0 
+        global lockR, lockM, M, R
+        with lockM:
+            localM = M
+        with lockR:
+            localR = R
+        for i in range(N):
+            for j in range(N):
+                if localR[j]:
+                    localM[i][j] *=3
+        with lockM:
+            M = localM
+        return localM 
     def F4(self):
-        time.sleep(3)
+        self.F1()
+        self.F2()
+        self.F3()
         return 0 
     def F5(self):
-        time.sleep(3)
+        self.F1()
+        self.F2()
+        self.F3()
         return 0 
     def F6(self):
-        time.sleep(3)
+        self.F1()
+        self.F2()
+        self.F3()
         return 0 
     def F7(self):
-        time.sleep(3)
+        self.F5()
         return 0 
     
-
-
+    def printResults(self):
+        global M, R, lockM, lockR
+        self.globalLogger("\nRESULTS:\n")
+        for i in range(N):
+            for j in range(N):
+                self.globalLogger(str(M[i][j]))
+                print(M[i][j])
+        self.globalLogger(str(R))
+        print(R)
 
 if __name__ == '__main__':
     import sys
