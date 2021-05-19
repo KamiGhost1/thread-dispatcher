@@ -7,6 +7,7 @@ from PyQt5.uic.properties import QtCore
 import methods
 import threading
 import random
+import numpy as np
 
 Form, _ = uic.loadUiType('form.ui')
 
@@ -18,7 +19,7 @@ lockR = threading.Lock()
 TaskCounter = 0 
 LOGG = ''
 startTime = 0
-N = 5
+N = 3
 MAX_VALUE = 100
 TRUE_VALUE = 0.5
 M = [[0]*N]*N
@@ -62,6 +63,7 @@ class Ui(QtWidgets.QMainWindow, Form):
             TaskCounter = 0
             self.printResults()
             self.viewLogs()
+            self.protocol()
 
 
     def Button2Pressed(self):
@@ -104,7 +106,7 @@ class Ui(QtWidgets.QMainWindow, Form):
         global startTime
         task.start()
         self.globalLogger("proccess " + task.id + " started in " + str(time.time()-startTime))
-        self.searchTask(task.id)
+        task.result = self.searchTask(task.id)
         task.finish()
         self.globalLogger("proccess " + task.id + " finish in " + str(time.time()-startTime))
         TaskCounter+=1
@@ -165,23 +167,23 @@ class Ui(QtWidgets.QMainWindow, Form):
 
     def searchTask(self, name):
         if name == 'A':
-            self.genM()
+            return self.genM()
         if name == 'B':
-            self.genR()
+            return self.genR()
         if name == 'C':
-            self.F1()
+            return self.F1()
         if name == 'D':
-            self.F2()
+            return self.F2()
         if name == 'E':
-            self.F3()
+            return self.F3()
         if name == 'F':
-            self.F4()
+            return self.F4()
         if name == 'G':
-            self.F5()
+            return self.F5()
         if name == 'H':
-            self.F6()
+            return self.F6()
         if name == 'K':
-            self.F7()
+            return self.F7()
 
     def logger(self, logs):
         log = self.textBrowser.toPlainText()
@@ -203,7 +205,7 @@ class Ui(QtWidgets.QMainWindow, Form):
     def genM(self):
         global M, MAX_VALUE, lockM
         with lockM:
-            localM = M
+            localM = np.array(M)
         a = 0
         for i in range(N):
             for j in range(N):
@@ -212,12 +214,13 @@ class Ui(QtWidgets.QMainWindow, Form):
                 # print(a)
         with lockM:
             M = localM
+        time.sleep(1)
         return localM
     def genR(self):
         global R,TRUE_VALUE, lockR
         a = 0
         with lockR:
-            localR = R
+            localR = np.array(R)
         for i in range(N):
             a = random.random()
             if(a > TRUE_VALUE):
@@ -226,13 +229,14 @@ class Ui(QtWidgets.QMainWindow, Form):
                 localR[i]=False
         with lockR:
             R = localR
+        time.sleep(1)
         return localR
     def F1(self):
         global lockR, lockM, M, R
         with lockM:
-            localM = M
+            localM = np.array(M)
         with lockR:
-            localR = R
+            localR = np.array(R)
         for i in range(N):
             for j in range(N):
                 # print(localM[i][j])
@@ -241,51 +245,54 @@ class Ui(QtWidgets.QMainWindow, Form):
                     localM[i][j] +=5
         with lockM:
             M = localM
+        time.sleep(1)
         return localM 
     def F2(self):
         global lockR, lockM, M, R
         with lockM:
-            localM = M
+            localM = np.array(M)
         with lockR:
-            localR = R
+            localR = np.array(R)
         for i in range(N):
             for j in range(N):
                 if localR[j]:
-                    localM[i][j] /=2
+                    localM[i][j] = round(localM[i][j]/2)
         with lockM:
             M = localM
+        time.sleep(1)
         return localM  
     def F3(self):
         global lockR, lockM, M, R
         with lockM:
-            localM = M
+            localM = np.array(M)
         with lockR:
-            localR = R
+            localR = np.array(R)
         for i in range(N):
             for j in range(N):
                 if localR[j]:
                     localM[i][j] *=3
         with lockM:
             M = localM
+        time.sleep(1)
         return localM 
     def F4(self):
-        self.F1()
-        self.F2()
-        self.F3()
-        return 0 
+        res1 = self.F1()
+        res2 = self.F2()
+        res3 = self.F3()
+        return [res1,res2,res3]  
     def F5(self):
-        self.F1()
-        self.F2()
-        self.F3()
-        return 0 
+        res1 = self.F1()
+        res2 = self.F2()
+        res3 = self.F3()
+        return [res1,res2,res3]  
     def F6(self):
-        self.F1()
-        self.F2()
-        self.F3()
-        return 0 
+        res1 = self.F1()
+        res2 = self.F2()
+        res3 = self.F3()
+        return [res1,res2,res3]  
     def F7(self):
-        self.F5()
-        return 0 
+        res = self.F5()
+        return res 
     
     def printResults(self):
         global M, R, lockM, lockR
@@ -296,6 +303,15 @@ class Ui(QtWidgets.QMainWindow, Form):
                 print(M[i][j])
         self.globalLogger(str(R))
         print(R)
+    
+    def protocol(self):
+        file = open("protocol.txt", "w")
+        file.write("0;1;2;3;4;5\n")
+        for i in self.tasks:
+            protocol = '{};{};{};{};{};{}\n'.format(self.tasks[i].id,self.tasks[i].initTime - startTime, self.tasks[i].initTasks , self.tasks[i].result ,self.tasks[i].nextTasks ,self.tasks[i].finishTime )
+            # print(protocol)
+            file.write(protocol)
+        pass
 
 if __name__ == '__main__':
     import sys
